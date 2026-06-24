@@ -22,4 +22,4 @@
 ## 🛠️ 如何在本機運行
 1. 將此專案複製（Clone）到本地：
    ```bash
-   git clone [https://github.com/gracieche/credit-decision-simulator.git](https://github.com/gracieche/credit-decision-simulator.git)
+   git clone [https://github.com/gracieche.github.io/credit-decision-simulator.git](https://github.com/gracieche.github.io/credit-decision-simulator.git)
