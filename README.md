@@ -4,7 +4,7 @@
 一個專為金融科技（FinTech）與風險管理團隊設計的互動式量化模擬工具。本專案透過動態調整違約機率（PD）或信用評分之閾值（Cutoff），即時量化「一類錯誤（Type I Error）」與「二類錯誤（Type II Error）」對業務營收、預期損失（Expected Loss）、不良貸款率（NPL）以及淨利潤（Net Revenue）的實質財務影響，進而推導出最優化決策點。
 
 ## 🚀 線上互動展示 (Live Demo)
-👉 [點擊此處直接線上操作模擬器](file:///Users/grecie/Downloads/風控模型閾值調整工具評析/授信決策index.html)
+👉 [點擊此處直接線上操作模擬器]([file:///Users/grecie/Downloads/風控模型閾值調整工具評析/授信決策index.html](https://gracieche.github.io/credit-decision-simulator/))
 
 ## 💡 核心商業與技術亮點
 - **最優閾值自動推導 (Cutoff Optimization)**：系統內建利潤曲線，能自動計算出最大化淨利潤的黃金分割點（Optimum），協助風控人員平衡「錯殺好客」與「放進爛客」的財務成本。
@@ -22,4 +22,4 @@
 ## 🛠️ 如何在本機運行
 1. 將此專案複製（Clone）到本地：
    ```bash
-   git clone [https://github.com/你的帳號/credit-decision-simulator.git](https://github.com/你的帳號/credit-decision-simulator.git)
+   git clone [https://github.com/gracieche/credit-decision-simulator.git](https://github.com/gracieche/credit-decision-simulator.git)
