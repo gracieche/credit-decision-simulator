@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=Noto+Sans+TC:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: #DBD6C6; -webkit-font-smoothing: antialiased; }
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#DBD6C6;font-family:'Noto Sans TC','IBM Plex Mono',sans-serif;color:#2C2A22;padding:30px 26px;">
+  <div style="max-width:1300px;margin:0 auto;background:#EEEADD;border:1px solid #DAD4C2;border-radius:18px;box-shadow:0 30px 70px -48px rgba(50,44,24,.55);overflow:hidden;">
+
+    <!-- Header -->
+    <div style="padding:20px 28px 0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:38px;height:38px;border-radius:9px;background:#A8392E;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:15px;color:#EEEADD;">&gt;_</div>
+          <div style="display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;">
+            <span style="font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:18px;letter-spacing:.16em;color:#2C2A22;white-space:nowrap;">CALC-OS</span>
+            <span style="color:#BBB5A2;">·</span>
+            <span style="font:700 16px 'Noto Sans TC';color:#2C2A22;white-space:nowrap;">授信決策引擎</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9A9484;letter-spacing:.04em;white-space:nowrap;">&nbsp;計價基準 2025.Q2</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="display:flex;border:1px solid #CFC8B4;border-radius:7px;overflow:hidden;font-family:'IBM Plex Mono',monospace;font-size:12px;">
+            <span style="padding:5px 11px;color:#9A9484;background:#E4DFD0;">US$</span>
+            <span style="padding:5px 11px;color:#EEEADD;background:#A8392E;font-weight:600;">NT$</span>
+          </div>
+          
+        </div>
+      </div>
+      <div style="height:2px;background:#A8392E;border-radius:2px;margin:15px 0 0;"></div>
+    </div>
+
+    <!-- Context strip -->
+    <div style="padding:16px 28px 0;display:flex;align-items:center;gap:13px;flex-wrap:wrap;">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:15px;color:#A8392E;">①</span>
+      <span style="font:700 14px 'Noto Sans TC';color:#2C2A22;">基本假設</span>
+      <span style="font:400 12px 'Noto Sans TC';color:#9A9484;">壞客 = 正樣本 (Positive · 違約)，先看母體與單位經濟</span>
+      <div style="flex:1;"></div>
+    </div>
+    <div style="padding:11px 28px 4px;display:flex;flex-wrap:wrap;gap:8px;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5C5A4E;background:#E5E0D1;border:1px solid #D6D0BD;border-radius:8px;padding:6px 12px;">母體　<b style="color:#2C2A22;font-weight:600;">10,000</b> 件</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5C5A4E;background:#E5E0D1;border:1px solid #D6D0BD;border-radius:8px;padding:6px 12px;">違約基準率　<b style="color:#2C2A22;font-weight:600;">{{badRatePct}}</b></div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5C5A4E;background:#E5E0D1;border:1px solid #D6D0BD;border-radius:8px;padding:6px 12px;">好客淨利息　<b style="color:#5E7445;font-weight:600;">{{profitGoodNT}}</b> / 件</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5C5A4E;background:#E5E0D1;border:1px solid #D6D0BD;border-radius:8px;padding:6px 12px;">壞客本金損失　<b style="color:#A8392E;font-weight:600;">{{lossBadNT}}</b> / 件</div>
+    </div>
+
+    <!-- Main two columns -->
+    <div style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:0;align-items:stretch;">
+
+      <!-- LEFT -->
+      <div style="padding:18px 28px 22px;border-right:1px dashed #D2CCB9;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.13em;color:#7C7868;">② DISTRIBUTION</span>
+          <span style="font:500 13px 'Noto Sans TC';color:#2C2A22;">違約機率分佈與核貸切點</span>
+        </div>
+
+        <svg viewBox="0 0 760 320" style="width:100%;height:auto;display:block;touch-action:none;user-select:none;">
+          <line x1="198" y1="16" x2="198" y2="280" stroke="#DCD7C7" stroke-width="1"></line>
+          <line x1="380" y1="16" x2="380" y2="280" stroke="#DCD7C7" stroke-width="1"></line>
+          <line x1="562" y1="16" x2="562" y2="280" stroke="#DCD7C7" stroke-width="1"></line>
+          <path d="{{approvedGoodPath}}" fill="#8CA06A" opacity="0.36"></path>
+          <path d="{{typeIPath}}" fill="#C7B179" opacity="0.42"></path>
+          <path d="{{typeIIPath}}" fill="#A8392E" opacity="0.22"></path>
+          <path d="{{axisTicks}}" stroke="#C9C3B0" stroke-width="1" fill="none"></path>
+          <line x1="16" y1="280" x2="744" y2="280" stroke="#C5BFAB" stroke-width="1.5"></line>
+          <path d="{{badPath}}" fill="none" stroke="#9A8E72" stroke-width="1.75"></path>
+          <path d="{{goodPath}}" fill="none" stroke="#5E7445" stroke-width="2.25"></path>
+          <text x="116" y="44" font-family="'IBM Plex Mono',monospace" font-size="12" font-weight="600" letter-spacing="0.05em" fill="#5E7445">好客 GOOD</text>
+          <text x="402" y="150" font-family="'IBM Plex Mono',monospace" font-size="12" font-weight="600" letter-spacing="0.05em" fill="#8E8268">壞客 BAD</text>
+          <line x1="{{cutX}}" y1="14" x2="{{cutX}}" y2="280" stroke="#2C2A22" stroke-width="1.5"></line>
+          <circle cx="{{cutX}}" cy="280" r="4.5" fill="#2C2A22"></circle>
+          <rect x="{{cutPillX}}" y="-3" width="58" height="20" rx="6" fill="#A8392E"></rect>
+          <text x="{{cutPillTextX}}" y="11" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="11" font-weight="700" fill="#EEEADD">{{cutoffStr}}%</text>
+          <text x="16" y="296" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#A8A293">0</text>
+          <text x="198" y="296" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#A8A293">10</text>
+          <text x="380" y="296" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#A8A293">20</text>
+          <text x="562" y="296" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#A8A293">30</text>
+          <text x="744" y="296" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#A8A293">40</text>
+          <text x="380" y="314" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9.5" fill="#BDB7A4" letter-spacing="0.16em">PD %  違約機率</text>
+          <rect x="16" y="14" width="728" height="266" fill="transparent" style="cursor:ew-resize;touch-action:none;" ref="{{chartOverlayRef}}" onPointerDown="{{onChartDown}}" onPointerMove="{{onChartMove}}" onPointerUp="{{onChartUp}}"></rect>
+        </svg>
+
+        <div style="display:flex;gap:15px;flex-wrap:wrap;margin-top:2px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#6E6A5C;">
+          <span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:11px;height:11px;background:#8CA06A;display:inline-block;border-radius:2px;"></span>核准好客</span>
+          <span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:11px;height:11px;background:#C7B179;display:inline-block;border-radius:2px;"></span>Type I 誤殺</span>
+          <span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:11px;height:11px;background:#A8392E;opacity:.55;display:inline-block;border-radius:2px;"></span>Type II 放行</span>
+          <span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:13px;height:2px;background:#2C2A22;display:inline-block;"></span>核貸切點</span>
+        </div>
+
+        <!-- PARAMETERS / slider -->
+        <div style="display:flex;align-items:center;gap:10px;margin:22px 0 12px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.13em;color:#7C7868;">③ THRESHOLD</span>
+          <span style="font:500 13px 'Noto Sans TC';color:#2C2A22;">核貸切點 · 風險／營收取捨</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px;">
+          <div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:#A8392E;">◀ CONSERVATIVE</div>
+            <div style="font:500 12.5px 'Noto Sans TC';color:#5C5A4E;margin-top:1px;">保守 · 極小化呆帳</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.16em;color:#9A9484;">CUT-OFF</div>
+            <div style="display:inline-block;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:29px;color:#2C2A22;line-height:1.25;border-bottom:2px dashed #C7C0AD;padding-bottom:1px;">PD ≤ {{cutoffStr}}%</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:#A8392E;">AGGRESSIVE ▶</div>
+            <div style="font:500 12.5px 'Noto Sans TC';color:#5C5A4E;margin-top:1px;">積極 · 極大化核貸</div>
+          </div>
+        </div>
+        <div ref="{{trackRef}}" onPointerDown="{{onTrackDown}}" onPointerMove="{{onTrackMove}}" onPointerUp="{{onTrackUp}}" style="position:relative;height:28px;cursor:ew-resize;touch-action:none;">
+          <div style="position:absolute;top:50%;left:0;right:0;height:4px;transform:translateY(-50%);background:#D5CFBC;border-radius:3px;"></div>
+          <div style="position:absolute;top:50%;left:0;width:{{handlePct}};height:4px;transform:translateY(-50%);background:#A8392E;border-radius:3px;"></div>
+          <div style="position:absolute;top:50%;left:{{handlePct}};transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;background:#EEEADD;border:2px solid #A8392E;box-shadow:0 2px 5px rgba(120,40,30,.28);"></div>
+        </div>
+        <div style="position:relative;height:8px;margin-top:1px;">
+          <div style="position:absolute;inset:0;height:4px;background:repeating-linear-gradient(90deg,#CDC7B3 0 1px,transparent 1px calc(100%/16));"></div>
+          <div style="position:absolute;inset:0;height:8px;background:repeating-linear-gradient(90deg,#ADA793 0 1px,transparent 1px 25%);"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:4px;font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#A8A293;">
+          <span>2%</span><span>10%</span><span>18%</span><span>26%</span><span>34%</span>
+        </div>
+
+        <div style="margin-top:18px;background:#E5E0D1;border:1px solid #D6D0BD;border-left:3px solid #A8392E;border-radius:10px;padding:12px 14px;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.13em;color:#A8392E;margin-bottom:5px;">CURRENT STRATEGY · 目前策略</div>
+          <div style="font:400 13px/1.65 'Noto Sans TC';color:#46443A;">{{settingText}}</div>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div style="padding:18px 28px 22px;display:flex;flex-direction:column;gap:16px;">
+
+        <!-- SYS.OUTPUT green panel -->
+        <div style="background:#A9BC8E;border-radius:16px;padding:18px 20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:#3A4A28;">④ SYS.OUTPUT · 財務影響</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;color:#3A4A28;">● LIVE</span>
+          </div>
+          <div style="border-top:1px dashed rgba(46,58,28,.34);margin:11px 0 12px;"></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:#3A4A28;">預期淨收益 · EXPECTED NET REVENUE</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:37px;line-height:1.05;letter-spacing:-0.01em;color:{{netRevColor}};margin-top:3px;">{{netRevNT}}</div>
+          <div style="display:flex;gap:11px;align-items:baseline;margin-top:4px;">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:#3A4A28;">≈ {{netRevUS}}</span>
+            <span style="font:400 11px 'Noto Sans TC';color:#56683C;">{{revDeltaStr}}</span>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#56683C;margin-top:3px;">= 核准好客 {{cmTN}} × 淨利息 − 核准壞客 {{approvedBadCnt}} × 本金損失</div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:15px;">
+            <div style="background:#3E4D2A;border-radius:11px;padding:11px 13px;">
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.05em;color:#A6BA84;">APPROVAL · 核貸率</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:21px;color:#EDEFDF;margin-top:2px;">{{approvalRateStr}}</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8DA168;">{{approvedCnt}} 件</div>
+            </div>
+            <div style="background:#3E4D2A;border-radius:11px;padding:11px 13px;">
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.05em;color:#A6BA84;">NPL · 逾放比</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:21px;color:{{nplCardColor}};margin-top:2px;">{{nplStr}}</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8DA168;">核准壞客 {{approvedBadCnt}} 件</div>
+            </div>
+            <div style="grid-column:span 2;background:#3E4D2A;border-radius:11px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.05em;color:#D8A99E;">EXPECTED LOSS · 呆帳損失</div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8DA168;margin-top:2px;">= 核准壞客 {{approvedBadCnt}} 件 × 本金損失</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:18px;color:#E8A595;">{{expLossNT}}</div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#B98A7E;">{{expLossUS}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confusion matrix card -->
+        <div style="background:#E5E0D1;border:1px solid #D6D0BD;border-radius:16px;padding:16px 18px;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:#7C7868;margin-bottom:12px;">⑤ CONFUSION MATRIX · 混淆矩陣</div>
+          <div style="display:grid;grid-template-columns:54px 1fr 1fr;gap:7px;">
+            <div></div>
+            <div style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#7C7868;">模型核准</div>
+            <div style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#7C7868;">模型拒絕</div>
+
+            <div style="display:flex;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#7C7868;">實際好客</div>
+            <div style="border-radius:10px;padding:11px;background:#DCE4CC;border:1px solid #C8D4B0;">
+              <div style="font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:19px;color:#5E7445;">{{cmTN}}</div>
+              <div style="font:500 10px 'Noto Sans TC';color:#5E7445;">✓ 正確核准</div>
+            </div>
+            <div style="border-radius:10px;padding:11px;background:#EBE2C9;border:1px solid #DBCFA9;">
+              <div style="font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:19px;color:#9A7E3A;">{{cmFP}}</div>
+              <div style="font:500 10px 'Noto Sans TC';color:#9A7E3A;">Type I 誤殺</div>
+            </div>
+
+            <div style="display:flex;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#7C7868;">實際壞客</div>
+            <div style="border-radius:10px;padding:11px;background:#EDD9D3;border:1px solid #E0C2B8;">
+              <div style="font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:19px;color:#A8392E;">{{cmFN}}</div>
+              <div style="font:500 10px 'Noto Sans TC';color:#A8392E;">Type II 放行</div>
+            </div>
+            <div style="border-radius:10px;padding:11px;background:#E0DCCB;border:1px solid #CFC8B3;">
+              <div style="font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:19px;color:#46443A;">{{cmTP}}</div>
+              <div style="font:500 10px 'Noto Sans TC';color:#46443A;">✓ 正確攔截</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFIT.SIM dark strip -->
+    <div style="background:#1C1C18;padding:20px 28px 24px;">
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px;">
+        <span style="width:11px;height:11px;border-radius:50%;background:#C56A5C;display:inline-block;"></span>
+        <span style="width:11px;height:11px;border-radius:50%;background:#C9A227;display:inline-block;"></span>
+        <span style="width:11px;height:11px;border-radius:50%;background:#7E9B4E;display:inline-block;"></span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:#7E7A68;margin-left:6px;">⑥ PROFIT.SIM — 預期淨收益 vs. 切點 · 尋找利潤最大化平衡點</span>
+      </div>
+      <div style="display:flex;gap:28px;align-items:center;">
+        <svg viewBox="0 0 384 150" style="flex:1;height:148px;min-width:0;">
+          <path d="{{profitArea}}" fill="#A9BC8E" opacity="0.12"></path>
+          <path d="{{profitLine}}" fill="none" stroke="#A9BC8E" stroke-width="2"></path>
+          <line x1="{{pcOptX}}" y1="8" x2="{{pcOptX}}" y2="134" stroke="#C9A227" stroke-dasharray="3 4" stroke-width="1.3"></line>
+          <circle cx="{{pcOptX}}" cy="{{pcOptY}}" r="3.5" fill="#C9A227"></circle>
+          <line x1="{{pcCurX}}" y1="8" x2="{{pcCurX}}" y2="134" stroke="#C56A5C" stroke-width="1.2" opacity="0.8"></line>
+          <circle cx="{{pcCurX}}" cy="{{pcCurY}}" r="5" fill="#1C1C18" stroke="#C56A5C" stroke-width="2.5"></circle>
+          <text x="14" y="148" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#615E50">2%</text>
+          <text x="370" y="148" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#615E50">34%</text>
+        </svg>
+        <div style="width:200px;flex-shrink:0;border-left:1px solid #34322A;padding-left:24px;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;color:#7E7A68;">OPTIMAL · 建議切點</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:23px;color:#C9A227;margin:1px 0 9px;">PD ≤ {{optStr}}%</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;color:#7E7A68;">最佳化淨收益</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:17px;color:#A9BC8E;">{{optRevNT}}</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#615E50;">{{optRevUS}}</div>
+        </div>
+      </div>
+      <div style="border-top:1px dashed rgba(201,162,39,.26);margin:14px 0 11px;"></div>
+      <div style="display:flex;align-items:flex-start;gap:9px;">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#C9A227;line-height:1.4;">$</span>
+        <div style="font:400 12.5px/1.6 'Noto Sans TC';color:#C5C1AE;">{{guidanceText}}</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;badRate&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:0.15,&quot;min&quot;:0.05,&quot;max&quot;:0.4,&quot;step&quot;:0.01,&quot;tsType&quot;:&quot;number&quot;},&quot;avgInterest&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:24000,&quot;min&quot;:5000,&quot;max&quot;:60000,&quot;step&quot;:1000,&quot;tsType&quot;:&quot;number&quot;},&quot;avgLoss&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:210000,&quot;min&quot;:50000,&quot;max&quot;:400000,&quot;step&quot;:10000,&quot;tsType&quot;:&quot;number&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { cutoff: 8 };
+    this.chartOverlayRef = React.createRef();
+    this.trackRef = React.createRef();
+    this.dragging = null;
+    this.FX = 32;
+    this.pdMin = 2; this.pdMax = 34; this.domMax = 40; this.step = 0.2;
+    this.plot = { x: 16, y: 16, w: 728, h: 264 };
+    this.baseline = this.plot.y + this.plot.h;
+    this.ensureSetup();
+  }
+
+  ensureSetup() {
+    const p = this.props || {};
+    const badRate = p.badRate != null ? p.badRate : 0.15;
+    const profitGood = p.avgInterest != null ? p.avgInterest : 24000;
+    const lossBad = p.avgLoss != null ? p.avgLoss : 210000;
+    const sig = badRate + '|' + profitGood + '|' + lossBad;
+    if (this._sig === sig) return;
+    this._sig = sig;
+    this.badRate = badRate; this.profitGood = profitGood; this.lossBad = lossBad;
+    this.setup();
+  }
+
+  setup() {
+    const N = 10000;
+    this.N = N;
+    this.goodN = Math.round(N * (1 - this.badRate));
+    this.badN = N - this.goodN;
+    const mug = 6, sig = 4, mub = 22, sib = 7;
+    const step = this.step;
+    const xs = [];
+    for (let x = 0; x <= this.domMax + 1e-9; x += step) xs.push(+x.toFixed(2));
+    this.xs = xs;
+    const pdf = (x, m, s) => Math.exp(-0.5 * ((x - m) / s) ** 2) / (s * Math.sqrt(2 * Math.PI));
+    let dg = xs.map(x => pdf(x, mug, sig));
+    let db = xs.map(x => pdf(x, mub, sib));
+    const area = a => a.reduce((p, c) => p + c, 0) * step;
+    const sg = area(dg), sb = area(db);
+    dg = dg.map(v => v / sg); db = db.map(v => v / sb);
+    this.dg = dg; this.db = db;
+    this.maxDens = Math.max(Math.max.apply(null, dg), Math.max.apply(null, db));
+    const cg = [], cb = [];
+    let ag = 0, ab = 0;
+    for (let i = 0; i < xs.length; i++) {
+      if (i > 0) { ag += (dg[i] + dg[i - 1]) / 2 * step; ab += (db[i] + db[i - 1]) / 2 * step; }
+      cg.push(ag); cb.push(ab);
+    }
+    this.cg = cg; this.cb = cb;
+    this.pts = xs.map((x, i) => ({ pd: x, px: this.xToPx(x), gy: this.dToPy(dg[i]), by: this.dToPy(db[i]) }));
+    this.goodPath = this.linePath(this.pts.map(p => [p.px, p.gy]));
+    this.badPath = this.linePath(this.pts.map(p => [p.px, p.by]));
+    let tk = '';
+    for (let pd = 0; pd <= 40; pd += 2) {
+      const x = this.xToPx(pd);
+      const len = (pd % 10 === 0) ? 7 : 4;
+      tk += 'M' + x.toFixed(1) + ' 280 L' + x.toFixed(1) + ' ' + (280 + len) + ' ';
+    }
+    this.axisTicks = tk;
+    const pc = [];
+    let best = { c: this.pdMin, v: -Infinity };
+    for (let c = this.pdMin; c <= this.pdMax + 1e-9; c += 0.25) {
+      const v = this.netRevenueAt(c);
+      pc.push({ c, v });
+      if (v > best.v) best = { c, v };
+    }
+    this.profitPts = pc;
+    this.optCutoff = best.c; this.optRev = best.v;
+    this.profitMaxV = Math.max.apply(null, pc.map(p => p.v));
+    this.profitMinV = Math.min.apply(null, pc.map(p => p.v));
+  }
+
+  cdfAt(arr, c) {
+    const xs = this.xs;
+    if (c <= xs[0]) return arr[0];
+    if (c >= xs[xs.length - 1]) return arr[arr.length - 1];
+    const idx = c / this.step;
+    const i = Math.floor(idx);
+    const f = idx - i;
+    return arr[i] + (arr[i + 1] - arr[i]) * f;
+  }
+  densAt(arr, c) {
+    const idx = c / this.step;
+    const i = Math.floor(idx);
+    if (i >= arr.length - 1) return arr[arr.length - 1];
+    const f = idx - i;
+    return arr[i] + (arr[i + 1] - arr[i]) * f;
+  }
+  netRevenueAt(c) {
+    // derive from ROUNDED case counts so it always reconciles with the confusion matrix
+    const ag = Math.round(this.goodN * this.cdfAt(this.cg, c));
+    const ab = Math.round(this.badN * this.cdfAt(this.cb, c));
+    return ag * this.profitGood - ab * this.lossBad;
+  }
+  xToPx(pd) { return this.plot.x + (pd / this.domMax) * this.plot.w; }
+  dToPy(d) { return this.baseline - (d / this.maxDens) * (this.plot.h * 0.9); }
+  linePath(arr) { return arr.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' '); }
+
+  fmtNT(v) {
+    const s = v < 0 ? '-' : '';
+    const a = Math.abs(v);
+    let body;
+    if (a >= 1e8) body = (a / 1e8).toFixed(2) + ' 億';
+    else body = Math.round(a / 1e4).toLocaleString() + ' 萬';
+    return s + 'NT$' + body;
+  }
+  fmtUS(v) {
+    const u = v / this.FX;
+    const s = u < 0 ? '-' : '';
+    const a = Math.abs(u);
+    let body;
+    if (a >= 1e6) body = (a / 1e6).toFixed(2) + 'M';
+    else if (a >= 1e3) body = (a / 1e3).toFixed(0) + 'K';
+    else body = Math.round(a).toString();
+    return s + 'US$' + body;
+  }
+  pct(x) { return (x * 100).toFixed(1) + '%'; }
+  cnt(x) { return Math.round(x).toLocaleString(); }
+
+  setCutoffVal(v) {
+    const pd = Math.max(this.pdMin, Math.min(this.pdMax, Math.round(v * 2) / 2));
+    if (pd !== this.state.cutoff) this.setState({ cutoff: pd });
+  }
+
+  startDrag(e, el, pdMin, pdMax) {
+    if (!el) return;
+    try { el.setPointerCapture(e.pointerId); } catch (_) {}
+    this.dragging = { el, pdMin, pdMax };
+    this.applyPointer(e);
+  }
+  applyPointer(e) {
+    const d = this.dragging;
+    if (!d || !d.el) return;
+    const r = d.el.getBoundingClientRect();
+    let f = (e.clientX - r.left) / r.width;
+    f = Math.max(0, Math.min(1, f));
+    let pd = d.pdMin + f * (d.pdMax - d.pdMin);
+    this.setCutoffVal(pd);
+  }
+  moveDrag(e) { if (this.dragging) this.applyPointer(e); }
+  endDrag() { this.dragging = null; }
+
+  renderVals() {
+    this.ensureSetup();
+    const c = this.state.cutoff;
+    const cutX = this.xToPx(c);
+    const gyc = this.dToPy(this.densAt(this.dg, c));
+    const byc = this.dToPy(this.densAt(this.db, c));
+
+    const ptsLg = this.pts.filter(p => p.pd <= c);
+    let approvedGoodPath = 'M ' + this.pts[0].px.toFixed(1) + ' ' + this.baseline + ' ';
+    approvedGoodPath += ptsLg.map(p => 'L ' + p.px.toFixed(1) + ' ' + p.gy.toFixed(1)).join(' ');
+    approvedGoodPath += ' L ' + cutX.toFixed(1) + ' ' + gyc.toFixed(1) + ' L ' + cutX.toFixed(1) + ' ' + this.baseline + ' Z';
+
+    const ptsR = this.pts.filter(p => p.pd >= c);
+    let typeIPath = 'M ' + cutX.toFixed(1) + ' ' + this.baseline + ' L ' + cutX.toFixed(1) + ' ' + gyc.toFixed(1) + ' ';
+    typeIPath += ptsR.map(p => 'L ' + p.px.toFixed(1) + ' ' + p.gy.toFixed(1)).join(' ');
+    typeIPath += ' L ' + this.pts[this.pts.length - 1].px.toFixed(1) + ' ' + this.baseline + ' Z';
+
+    const ptsL = this.pts.filter(p => p.pd <= c);
+    let typeIIPath = 'M ' + this.pts[0].px.toFixed(1) + ' ' + this.baseline + ' ';
+    typeIIPath += ptsL.map(p => 'L ' + p.px.toFixed(1) + ' ' + p.by.toFixed(1)).join(' ');
+    typeIIPath += ' L ' + cutX.toFixed(1) + ' ' + byc.toFixed(1) + ' L ' + cutX.toFixed(1) + ' ' + this.baseline + ' Z';
+
+    const fg = this.cdfAt(this.cg, c), fb = this.cdfAt(this.cb, c);
+    // round to whole cases first, then derive every $ figure from the integer counts → fully reconciled
+    const aGood = Math.round(this.goodN * fg);
+    const rGood = this.goodN - aGood;
+    const aBad = Math.round(this.badN * fb);
+    const rBad = this.badN - aBad;
+    const approved = aGood + aBad;
+    const approvalRate = approved / this.N;
+    const npl = approved > 0 ? aBad / approved : 0;
+    const netRev = aGood * this.profitGood - aBad * this.lossBad;
+    const expLoss = aBad * this.lossBad;
+
+    const pcW = 356, pcH = 124, pcX0 = 14, pcY0 = 10;
+    const span = (this.profitMaxV - this.profitMinV) || 1;
+    const pcx = v => pcX0 + ((v - this.pdMin) / (this.pdMax - this.pdMin)) * pcW;
+    const pcy = v => pcY0 + (1 - (v - this.profitMinV) / span) * pcH;
+    const profitLine = this.profitPts.map((p, i) => (i ? 'L' : 'M') + pcx(p.c).toFixed(1) + ' ' + pcy(p.v).toFixed(1)).join(' ');
+    const profitArea = profitLine + ' L ' + pcx(this.pdMax).toFixed(1) + ' ' + (pcY0 + pcH) + ' L ' + pcx(this.pdMin).toFixed(1) + ' ' + (pcY0 + pcH) + ' Z';
+
+    const opt = this.optCutoff;
+    let settingText, guidanceText;
+    if (c < opt - 0.75) {
+      settingText = '偏向保守：嚴格切點壓低呆帳（Type II 漏網少），但拒絕較多好客（Type I 誤殺高），以營收換取資產品質。';
+      guidanceText = '提高切點至 PD ≤ ' + opt.toFixed(1) + '% 可增加約 ' + this.fmtNT(this.optRev - netRev) + ' 淨收益（代價：逾放比小幅上升）。';
+    } else if (c > opt + 0.75) {
+      settingText = '偏向積極：寬鬆切點核准更多好客拉高營收（Type I 少），但放行較多壞客（Type II 上升），呆帳風險升高。';
+      guidanceText = '降低切點至 PD ≤ ' + opt.toFixed(1) + '% 可減少呆帳，並提升淨收益約 ' + this.fmtNT(this.optRev - netRev) + '。';
+    } else {
+      settingText = '均衡：在誤殺好客 (Type I · 機會成本) 與放行壞客 (Type II · 呆帳) 之間取得平衡。';
+      guidanceText = '已接近利潤最佳化切點 (PD ≤ ' + opt.toFixed(1) + '%)，淨收益處於高原區間，微調對總利潤影響有限。';
+    }
+    const revDeltaStr = Math.abs(c - opt) <= 0.75 ? '已達最佳區間' : '距最佳化 ' + this.fmtNT(netRev - this.optRev);
+
+    const cutPillX = Math.max(16, Math.min(686, cutX - 29));
+
+    return {
+      badRatePct: this.pct(this.badRate),
+      profitGoodNT: this.fmtNT(this.profitGood),
+      lossBadNT: this.fmtNT(this.lossBad),
+      goodPath: this.goodPath,
+      badPath: this.badPath,
+      approvedGoodPath,
+      axisTicks: this.axisTicks,
+      typeIPath, typeIIPath,
+      cutX,
+      cutPillX, cutPillTextX: cutPillX + 29,
+      cutoffStr: c.toFixed(1),
+      handlePct: ((c - this.pdMin) / (this.pdMax - this.pdMin) * 100).toFixed(2) + '%',
+      netRevNT: this.fmtNT(netRev),
+      netRevUS: this.fmtUS(netRev),
+      netRevColor: netRev >= 0 ? '#243018' : '#7E2A20',
+      revDeltaStr,
+      approvalRateStr: this.pct(approvalRate),
+      approvedCnt: this.cnt(approved),
+      nplStr: this.pct(npl),
+      nplCardColor: npl > 0.03 ? '#E8A595' : '#EDEFDF',
+      approvedBadCnt: this.cnt(aBad),
+      expLossNT: this.fmtNT(expLoss),
+      expLossUS: this.fmtUS(expLoss),
+      cmTN: this.cnt(aGood),
+      cmFP: this.cnt(rGood),
+      cmFN: this.cnt(aBad),
+      cmTP: this.cnt(rBad),
+      profitLine, profitArea,
+      pcOptX: pcx(opt), pcOptY: pcy(this.optRev),
+      pcCurX: pcx(c), pcCurY: pcy(netRev),
+      optStr: opt.toFixed(1),
+      optRevNT: this.fmtNT(this.optRev),
+      optRevUS: this.fmtUS(this.optRev),
+      settingText, guidanceText,
+      chartOverlayRef: this.chartOverlayRef,
+      trackRef: this.trackRef,
+      onChartDown: (e) => this.startDrag(e, this.chartOverlayRef.current, 0, this.domMax),
+      onChartMove: (e) => this.moveDrag(e),
+      onChartUp: () => this.endDrag(),
+      onTrackDown: (e) => this.startDrag(e, this.trackRef.current, this.pdMin, this.pdMax),
+      onTrackMove: (e) => this.moveDrag(e),
+      onTrackUp: () => this.endDrag(),
+    };
+  }
+}
+</script>
+</body>
+</html>
